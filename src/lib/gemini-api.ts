@@ -1,6 +1,5 @@
-
 // Gemini API key
-const API_KEY = "AIzaSyBp4oDLmglH38eg1jdbew3C0RYI4VSEcWU";
+const API_KEY = "AIzaSyCrIpsbZ3FypIxI6FYsUJlY1Nb6QXuNQQw";
 
 /**
  * Analyzes the skill gap between user's resume and desired job role

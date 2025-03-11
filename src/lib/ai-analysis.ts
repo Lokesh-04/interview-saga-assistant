@@ -1,6 +1,6 @@
 
 // API key for Gemini AI
-const API_KEY = "AIzaSyBp4oDLmglH38eg1jdbew3C0RYI4VSEcWU";
+const API_KEY = "AIzaSyCrIpsbZ3FypIxI6FYsUJlY1Nb6QXuNQQw";
 
 interface InterviewData {
   company: string;
