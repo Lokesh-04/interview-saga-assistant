@@ -78,12 +78,18 @@ const ShareExperienceForm = ({ onSubmit, isPending }: ShareExperienceFormProps) 
             <FormItem>
               <FormLabel>Experience</FormLabel>
               <FormDescription>
-                Describe interview rounds, types of questions, and your overall experience
+                Share details about the interview process such as:
+                <ul className="list-disc pl-5 mt-1 text-xs">
+                  <li>The number and types of interview rounds</li>
+                  <li>Technical questions you were asked</li>
+                  <li>System design or coding challenges</li>
+                  <li>Behavioral questions and overall experience</li>
+                </ul>
               </FormDescription>
               <FormControl>
                 <Textarea
                   placeholder="The interview process started with a phone screening followed by technical rounds. The questions focused on..."
-                  className="min-h-[120px]"
+                  className="min-h-[150px]"
                   {...field}
                 />
               </FormControl>

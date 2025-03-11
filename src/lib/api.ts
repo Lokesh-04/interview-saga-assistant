@@ -10,7 +10,7 @@ interface InterviewExperience {
 }
 
 // Mock data for development purposes
-export const mockInterviews: InterviewExperience[] = [
+const mockInterviews: InterviewExperience[] = [
   {
     id: 1,
     company: "Google",
@@ -34,17 +34,20 @@ export const mockInterviews: InterviewExperience[] = [
   }
 ];
 
+// Our in-memory database
+let interviewExperiences = [...mockInterviews];
+
 // Get all interview experiences, optionally filtered by search query
 export const getInterviewExperiences = async (searchQuery?: string): Promise<InterviewExperience[]> => {
   // Simulate API call delay
   await new Promise(resolve => setTimeout(resolve, 500));
   
   if (!searchQuery) {
-    return mockInterviews;
+    return [...interviewExperiences]; // Return a copy to prevent direct mutation
   }
   
   const query = searchQuery.toLowerCase();
-  return mockInterviews.filter(
+  return interviewExperiences.filter(
     interview => 
       interview.company.toLowerCase().includes(query) || 
       interview.position.toLowerCase().includes(query) ||
@@ -57,7 +60,7 @@ export const getInterviewExperienceById = async (id: number): Promise<InterviewE
   // Simulate API call delay
   await new Promise(resolve => setTimeout(resolve, 300));
   
-  return mockInterviews.find(interview => interview.id === id);
+  return interviewExperiences.find(interview => interview.id === id);
 };
 
 // Create a new interview experience
@@ -69,18 +72,21 @@ export const createInterviewExperience = async (data: {
   // Simulate API call delay
   await new Promise(resolve => setTimeout(resolve, 800));
   
-  // Create new interview object with mock data
+  // Get the highest current ID and increment by 1
+  const maxId = interviewExperiences.reduce((max, interview) => 
+    interview.id > max ? interview.id : max, 0);
+  
+  // Create new interview object
   const newInterview: InterviewExperience = {
-    id: mockInterviews.length + 1,
+    id: maxId + 1,
     company: data.company,
     position: data.position,
     experience: data.experience,
     date: new Date().toISOString().split('T')[0]
   };
   
-  // In a real app, we would save this to a database
-  // For now, we'll just add it to our mock data
-  mockInterviews.push(newInterview);
+  // Add to our in-memory database
+  interviewExperiences.push(newInterview);
   
   return newInterview;
 };
