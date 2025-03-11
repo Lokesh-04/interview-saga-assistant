@@ -35,6 +35,7 @@ const formSchema = z.object({
   overallExperience: z.string().min(10, {
     message: "Please share your overall experience in at least 10 characters.",
   }),
+  experience: z.string().optional(), // Add this field to match the API requirements
 });
 
 interface ShareExperienceFormProps {
@@ -53,6 +54,7 @@ const ShareExperienceForm = ({ onSubmit, isPending }: ShareExperienceFormProps) 
       systemDesign: "",
       behavioralQuestions: "",
       overallExperience: "",
+      experience: "", // Initialize the experience field
     },
   });
 
@@ -70,12 +72,11 @@ ${values.systemDesign ? `System Design: ${values.systemDesign}
 
 Overall Experience: ${values.overallExperience}`;
 
-    // Send the formatted data to the parent component
-    onSubmit({
-      company: values.company,
-      position: values.position,
-      experience: formattedExperience.trim(),
-    });
+    // Update the experience field with the formatted text
+    values.experience = formattedExperience.trim();
+
+    // Send the data to the parent component
+    onSubmit(values);
   };
 
   return (

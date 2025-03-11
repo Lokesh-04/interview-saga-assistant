@@ -26,10 +26,11 @@ const Index = () => {
 
   const mutation = useMutation({
     mutationFn: (values: z.infer<typeof formSchema>) => {
+      // Make sure we're sending the correct data structure to the API
       return createInterviewExperience({
         company: values.company,
         position: values.position,
-        experience: values.experience
+        experience: values.experience || '' // Use the experience field we created
       });
     },
     onSuccess: () => {
