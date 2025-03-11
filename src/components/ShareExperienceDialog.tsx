@@ -33,7 +33,7 @@ const ShareExperienceDialog = ({
           Share Your Experience
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[525px]">
+      <DialogContent className="sm:max-w-[625px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Share Your Interview Experience</DialogTitle>
           <DialogDescription>
