@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { GraduationCap } from "lucide-react";
@@ -9,7 +8,7 @@ import { createInterviewExperience, getInterviewExperiences } from "@/lib/api";
 import InterviewSearchBar from "@/components/InterviewSearchBar";
 import InterviewExperiencesList from "@/components/InterviewExperiencesList";
 import ShareExperienceDialog from "@/components/ShareExperienceDialog";
-import { formSchema } from "@/components/ShareExperienceForm";
+import { formSchema } from "@/schemas/interviewExperienceSchema";
 import * as z from "zod";
 
 const Index = () => {
@@ -26,11 +25,10 @@ const Index = () => {
 
   const mutation = useMutation({
     mutationFn: (values: z.infer<typeof formSchema>) => {
-      // Make sure we're sending the correct data structure to the API
       return createInterviewExperience({
         company: values.company,
         position: values.position,
-        experience: values.experience || '' // Use the experience field we created
+        experience: values.experience || ''
       });
     },
     onSuccess: () => {

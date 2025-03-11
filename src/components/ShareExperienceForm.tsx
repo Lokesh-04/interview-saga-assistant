@@ -1,50 +1,22 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-  FormDescription,
-} from "@/components/ui/form";
-
-const formSchema = z.object({
-  company: z.string().min(2, {
-    message: "Company must be at least 2 characters.",
-  }),
-  position: z.string().min(2, {
-    message: "Position must be at least 2 characters.",
-  }),
-  interviewRounds: z.string().min(1, {
-    message: "Please specify the number of interview rounds.",
-  }),
-  technicalQuestions: z.string().min(5, {
-    message: "Please provide some details about technical questions asked.",
-  }),
-  systemDesign: z.string().optional(),
-  behavioralQuestions: z.string().min(5, {
-    message: "Please describe some behavioral questions asked.",
-  }),
-  overallExperience: z.string().min(10, {
-    message: "Please share your overall experience in at least 10 characters.",
-  }),
-  experience: z.string().optional(), // Add this field to match the API requirements
-});
+import { Form } from "@/components/ui/form";
+import { formSchema, FormValues } from "@/schemas/interviewExperienceSchema";
+import CompanyPositionFields from "@/components/form-fields/CompanyPositionFields";
+import InterviewStructureField from "@/components/form-fields/InterviewStructureField";
+import TechnicalQuestionsFields from "@/components/form-fields/TechnicalQuestionsFields";
+import BehavioralExperienceFields from "@/components/form-fields/BehavioralExperienceFields";
+import { formatExperience } from "@/utils/formatExperience";
 
 interface ShareExperienceFormProps {
-  onSubmit: (values: z.infer<typeof formSchema>) => void;
+  onSubmit: (values: FormValues) => void;
   isPending: boolean;
 }
 
 const ShareExperienceForm = ({ onSubmit, isPending }: ShareExperienceFormProps) => {
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       company: "",
@@ -54,26 +26,19 @@ const ShareExperienceForm = ({ onSubmit, isPending }: ShareExperienceFormProps) 
       systemDesign: "",
       behavioralQuestions: "",
       overallExperience: "",
-      experience: "", // Initialize the experience field
+      experience: "",
     },
   });
 
-  // Format data before submission to match the API structure
-  const handleFormSubmit = (values: z.infer<typeof formSchema>) => {
-    // Combine all interview details into a single experience string
-    const formattedExperience = `
-The interview process consisted of ${values.interviewRounds} rounds.
-
-Technical Questions: ${values.technicalQuestions}
-
-${values.systemDesign ? `System Design: ${values.systemDesign}
-
-` : ''}Behavioral Questions: ${values.behavioralQuestions}
-
-Overall Experience: ${values.overallExperience}`;
-
-    // Update the experience field with the formatted text
-    values.experience = formattedExperience.trim();
+  const handleFormSubmit = (values: FormValues) => {
+    // Format the experience field using our utility function
+    values.experience = formatExperience({
+      interviewRounds: values.interviewRounds,
+      technicalQuestions: values.technicalQuestions,
+      systemDesign: values.systemDesign,
+      behavioralQuestions: values.behavioralQuestions,
+      overallExperience: values.overallExperience,
+    });
 
     // Send the data to the parent component
     onSubmit(values);
@@ -82,128 +47,10 @@ Overall Experience: ${values.overallExperience}`;
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-4">
-        <FormField
-          control={form.control}
-          name="company"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Company</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter company name (e.g., Google, Microsoft)" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="position"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Position</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter position (e.g., Senior Frontend Developer)" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="interviewRounds"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Interview Rounds</FormLabel>
-              <FormDescription>
-                How many interview rounds did you go through? (e.g., "5 rounds: phone screening, technical, system design, behavioral, team fit")
-              </FormDescription>
-              <FormControl>
-                <Input placeholder="Describe the number and types of interviews" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="technicalQuestions"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Technical Questions</FormLabel>
-              <FormDescription>
-                What types of technical or algorithmic questions were you asked?
-              </FormDescription>
-              <FormControl>
-                <Textarea
-                  placeholder="The technical questions focused on data structures like trees and arrays. They asked me to solve problems related to..."
-                  className="min-h-[100px]"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="systemDesign"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>System Design (Optional)</FormLabel>
-              <FormDescription>
-                Were there any system design questions? If so, what were they?
-              </FormDescription>
-              <FormControl>
-                <Textarea
-                  placeholder="I was asked to design a scalable web service that could handle..."
-                  className="min-h-[100px]"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="behavioralQuestions"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Behavioral Questions</FormLabel>
-              <FormDescription>
-                What behavioral questions were asked? How did you respond?
-              </FormDescription>
-              <FormControl>
-                <Textarea
-                  placeholder="The behavioral questions focused on past experiences and how I handled difficult situations..."
-                  className="min-h-[100px]"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="overallExperience"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Overall Experience</FormLabel>
-              <FormDescription>
-                How would you describe your overall interview experience?
-              </FormDescription>
-              <FormControl>
-                <Textarea
-                  placeholder="The overall interview experience was professional and challenging..."
-                  className="min-h-[100px]"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <CompanyPositionFields form={form} />
+        <InterviewStructureField form={form} />
+        <TechnicalQuestionsFields form={form} />
+        <BehavioralExperienceFields form={form} />
         <Button type="submit" className="w-full" disabled={isPending}>
           {isPending ? "Submitting..." : "Submit Your Experience"}
         </Button>
@@ -212,5 +59,6 @@ Overall Experience: ${values.overallExperience}`;
   );
 };
 
+// We need to export the schema for the dialog component
 export { formSchema };
 export default ShareExperienceForm;

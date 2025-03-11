@@ -9,7 +9,8 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
-import ShareExperienceForm, { formSchema } from "./ShareExperienceForm";
+import ShareExperienceForm from "./ShareExperienceForm";
+import { formSchema } from "@/schemas/interviewExperienceSchema";
 import * as z from "zod";
 
 interface ShareExperienceDialogProps {
