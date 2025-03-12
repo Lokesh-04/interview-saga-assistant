@@ -1,16 +1,18 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { GraduationCap, Briefcase } from "lucide-react";
+import { GraduationCap, Briefcase, LogOut, UserCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { createInterviewExperience, getInterviewExperiences } from "@/lib/api";
+import { useAuth } from "@/contexts/AuthContext";
 import InterviewSearchBar from "@/components/InterviewSearchBar";
 import InterviewExperiencesList from "@/components/InterviewExperiencesList";
 import ShareExperienceDialog from "@/components/ShareExperienceDialog";
 import { formSchema } from "@/schemas/interviewExperienceSchema";
 import * as z from "zod";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 const Index = () => {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
@@ -18,6 +20,7 @@ const Index = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { user, logout } = useAuth();
 
   const { data: interviewExperiences, isLoading } = useQuery({
     queryKey: ["interviewExperiences", searchQuery],
@@ -63,11 +66,43 @@ const Index = () => {
     mutation.mutate(values);
   };
 
+  const handleLogout = () => {
+    logout();
+    navigate("/auth");
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <div className="bg-primary text-primary-foreground py-6">
         <div className="container mx-auto px-4">
-          <h1 className="text-3xl font-bold">Share & Discover Interview Experiences</h1>
+          <div className="flex justify-between items-center mb-4">
+            <h1 className="text-3xl font-bold">Share & Discover Interview Experiences</h1>
+            
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-8 w-8 rounded-full">
+                  <UserCircle className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  <UserCircle className="mr-2 h-4 w-4" />
+                  <span>{user?.email}</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <span className="capitalize">{user?.role || "Student"}</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Log out</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+          
           <p className="text-sm">
             Contribute to the community by sharing your interview experiences and
             learn from others.
@@ -88,7 +123,7 @@ const Index = () => {
             <InterviewSearchBar onSearch={handleSearch} />
             <Button
               variant="outline"
-              onClick={() => window.location.href = '/jobs'}
+              onClick={() => navigate('/jobs')}
               className="flex items-center gap-2"
             >
               <Briefcase className="h-4 w-4" />
@@ -96,7 +131,7 @@ const Index = () => {
             </Button>
             <Button
               variant="outline"
-              onClick={() => window.location.href = '/skill-gap-analyzer'}
+              onClick={() => navigate('/skill-gap-analyzer')}
               className="flex items-center gap-2"
             >
               <GraduationCap className="h-4 w-4" />

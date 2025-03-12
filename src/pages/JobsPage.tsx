@@ -3,14 +3,17 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { getJobPostings } from "@/lib/job-api";
+import { useAuth } from "@/contexts/AuthContext";
 import JobSearchBar from "@/components/JobSearchBar";
 import JobPostingsList from "@/components/JobPostingsList";
 import { Button } from "@/components/ui/button";
-import { Briefcase, GraduationCap, ChevronLeft } from "lucide-react";
+import { Briefcase, GraduationCap, ChevronLeft, PlusCircle } from "lucide-react";
 
 const JobsPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const isAdmin = user?.role === "admin";
 
   const { data: jobPostings, isLoading } = useQuery({
     queryKey: ["jobPostings", searchQuery],
@@ -45,11 +48,23 @@ const JobsPage = () => {
       
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8 flex flex-col gap-6">
-          <div>
-            <h2 className="text-2xl font-bold">Tech Job Listings</h2>
-            <p className="text-muted-foreground">
-              Find open positions at top technology companies
-            </p>
+          <div className="flex justify-between items-center">
+            <div>
+              <h2 className="text-2xl font-bold">Tech Job Listings</h2>
+              <p className="text-muted-foreground">
+                Find open positions at top technology companies
+              </p>
+            </div>
+            
+            {isAdmin && (
+              <Button 
+                onClick={() => navigate("/admin/jobs/new")}
+                className="flex items-center gap-2"
+              >
+                <PlusCircle className="h-4 w-4" />
+                Post New Job
+              </Button>
+            )}
           </div>
           
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
