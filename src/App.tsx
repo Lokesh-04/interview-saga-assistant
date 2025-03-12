@@ -8,6 +8,8 @@ import { ThemeProvider } from "next-themes";
 import Index from "./pages/Index";
 import InterviewDetails from "./pages/InterviewDetails";
 import SkillGapAnalyzer from "./pages/SkillGapAnalyzer";
+import JobsPage from "./pages/JobsPage";
+import JobDetailPage from "./pages/JobDetailPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -23,6 +25,8 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/interview/:id" element={<InterviewDetails />} />
             <Route path="/skill-gap-analyzer" element={<SkillGapAnalyzer />} />
+            <Route path="/jobs" element={<JobsPage />} />
+            <Route path="/job/:id" element={<JobDetailPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

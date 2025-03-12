@@ -1,6 +1,7 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { GraduationCap } from "lucide-react";
+import { GraduationCap, Briefcase } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
@@ -84,6 +85,14 @@ const Index = () => {
           
           <div className="flex flex-col sm:flex-row gap-3">
             <InterviewSearchBar onSearch={handleSearch} />
+            <Button
+              variant="outline"
+              onClick={() => window.location.href = '/jobs'}
+              className="flex items-center gap-2"
+            >
+              <Briefcase className="h-4 w-4" />
+              Browse Jobs
+            </Button>
             <Button
               variant="outline"
               onClick={() => window.location.href = '/skill-gap-analyzer'}
