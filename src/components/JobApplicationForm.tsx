@@ -53,7 +53,13 @@ const JobApplicationForm = ({
   const onSubmit = async (values: FormValues) => {
     setIsPending(true);
     try {
-      const result = await applyForJob(jobId, values);
+      // Make sure we pass all required properties to applyForJob
+      const result = await applyForJob(jobId, {
+        name: values.name,
+        email: values.email,
+        resume: values.resume,
+        coverLetter: values.coverLetter
+      });
       
       if (result.success) {
         toast({
